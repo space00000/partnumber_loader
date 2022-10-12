@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+sss
 
 specs_path = 'C:/Users/GERARDITO/OneDrive - ASUS/Database/SQL/input/'
 
