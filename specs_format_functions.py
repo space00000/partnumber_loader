@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import psycopg2
 
 specs_path = 'C:/Users/GERARDITO/OneDrive - ASUS/Database/SQL/input/'
 
@@ -116,5 +117,3 @@ def clean_spec_aio():
     global df_spec
 
     df_spec = df
-
-print(df_spec)
