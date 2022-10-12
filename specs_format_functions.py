@@ -117,5 +117,3 @@ def clean_spec_aio():
     global df_spec
 
     df_spec = df
-
-print(df_spec)
