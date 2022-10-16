@@ -4,6 +4,7 @@ import specs_format_functions
 from specs_format_functions import *
 from sqlalchemy import create_engine
 from sqlite3 import connect
+import psycopg2
 
 #Open datatbase connection with psycopg2
 

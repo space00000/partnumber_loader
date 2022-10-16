@@ -65,9 +65,7 @@ def read_sku():
 
     df_sku = df
 
-    print("df_sku actualizado!")
-
-    print(df_sku.info())
+    print("Dataframe actualizado!")
 
 def update_sku():
 
@@ -91,16 +89,18 @@ def update_sku():
 
     print("Nueva tabla creada!")
 
-    #update_query = """ UPDATE sku
-     #                   SET sku.product_id = product_list.id
-      #                  FROM sku
-       #                 JOIN temp_sku
-       #                 ON sku.sku = temp_sku.sku and sku.account_id = temp_sku.account_id
-       #                 JOIN product_list
-       #                 ON temp_sku.part_number = product_list.part_number"""
+    update_query = """UPDATE sku sk
+                    SET product_id = pl.id
+                    FROM temp_sku tmp
+                    JOIN product_list pl
+                    ON tmp.part_number = pl.part_number
+                    WHERE sk.sku = tmp.sku AND sk.account_id = tmp.account_id;"""
+
+    psqlCursor.execute(update_query)
+    connection.commit()
+
+
+    print('Sku actualizado!')
 
     psqlCursor.close();
     connection.close();
-
-read_sku()
-update_sku()
