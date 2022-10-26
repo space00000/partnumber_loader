@@ -5,6 +5,8 @@ from specs_format_functions import *
 from sqlalchemy import create_engine
 from sqlite3 import connect
 import psycopg2
+import exhibition_cleaner
+from exhibition_cleaner import *
 
 #Open datatbase connection with psycopg2
 
@@ -224,6 +226,68 @@ def upload():
                             on tabla.business_unit  = bu.business_unit ;"""
 
     psqlCursor.execute(insert_table);
+    connection.commit()
+
+    print('Datos subidos!')
+
+    #End connection to database
+
+    psqlCursor.close();
+
+    connection.close();
+
+def upload_exhibition():
+
+    #Siempre abrir cursos para poder trabajar
+
+    psqlCursor = connection.cursor();
+
+    #Borrar tabla si es que existe, asi evitamos duplicacion
+
+    tableName = "temp_exhibition";
+
+    dropTableStmt = "DROP TABLE IF EXISTS %s;"%tableName;
+
+    psqlCursor.execute(dropTableStmt);
+
+    connection.commit()
+
+    #Crear tabla a partir del df creado por las funciones de formateo
+
+    exhibition_cleaner.df_exhibition.to_sql('temp_exhibition', engine)
+
+    insert_table = """INSERT INTO store_exhibition(exhibition_date, barcode, latitude, longitude, account_id)
+                        SELECT tx."Date", tx."Barcode_rules", tx."Latitude", tx."Longitude", tx."customer_id"
+                        FROM temp_exhibition tx """
+
+    psqlCursor.execute(insert_table);
+    connection.commit()
+
+    update_product_id_ean = """update store_exhibition st
+                                set product_id = pl.id
+                                from product_list pl
+                                where pl."EAN" = st."barcode";"""
+
+    psqlCursor.execute(update_product_id_ean);
+    connection.commit()
+
+    update_product_id_sku = """update store_exhibition st
+                                set product_id = sk.product_id
+                                from sku sk
+                                where sk.sku = st."barcode"
+                                and sk.account_id = st.account_id ;"""
+
+    psqlCursor.execute(update_product_id_sku);
+    connection.commit()
+
+    update_store_id = """update store_exhibition st
+                            set store_id = ss.id 
+                            from store ss
+                        where ss.account_id = st.account_id 
+                        and ss.latitude_short = st."latitude" 
+                        and ss.longitude_short = st."longitude" ;"""
+
+    psqlCursor.execute(update_store_id);
     connection.commit()
 
     print('Datos subidos!')

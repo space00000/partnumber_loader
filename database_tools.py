@@ -14,6 +14,7 @@ def my_menu():
     print("(4) Limpiar y subir AIO specs")
     print("(5) Obtener sku sin part-number")
     print("(6) Actualizar part-number de sku")
+    print("(7) Agregar exhibición semanal")
     print("(0) Salir")
     print()
     choice = int(input("Ingresa tu opción: "))
@@ -37,6 +38,9 @@ def my_menu():
         elif choice == 6:
             read_sku()
             update_sku()
+        elif choice == 7:
+            clean_exhibition()
+            upload_exhibition()
         else:
             print("Favor ingresar un número")
         choice = int(input("Si quieres salir presiona 0 o selecciona otra opción: "))
